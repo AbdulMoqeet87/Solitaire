@@ -28,7 +28,7 @@ Board::Board()
     int index = 0;
 
 
-    for (int i = 0; i < 52; i++)
+ /*   for (int i = 0; i < 52; i++)
     {
         if (i%2== 0)
         {
@@ -40,10 +40,10 @@ Board::Board()
         {
             Deck[i] = new Hearts(230, 160, 2, "red");
         }
-    }
+    }*/
 
 
-   /* for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
 
         for (int j = 0; j < 13; j++,index++)
@@ -71,7 +71,7 @@ Board::Board()
 
         }
 
-    }*/
+    }
 
     
     Houses = new House * [4];
@@ -676,7 +676,7 @@ void Board::ShiftHelperDeck()
         }
         HelperReloaded = false;
     }
-    else if (Helper_Deck.empty() && !Chota_Helper.empty())
+    else if ((Helper_Deck.empty()) && (!Chota_Helper.empty()))
     {
         if (GameMOde == 1)
         {
@@ -687,7 +687,8 @@ void Board::ShiftHelperDeck()
         {
             if (Chota_Helper.size() <= 2)
             {
-                for (int i = 0; i < Chota_Helper.size(); i++)
+                int size = Chota_Helper.size();
+                for (int i = 0; i <size ; i++)
                 {
                     Temp_Deck.push(Chota_Helper[0]);
                     Chota_Helper.erase(Chota_Helper.begin());
@@ -703,9 +704,10 @@ void Board::ShiftHelperDeck()
             }
 
         }
-        else if (GameMOde = 3)
+        else if (GameMOde == 3)
         {
-            for (int i = 0; i < Chota_Helper.size(); i++)
+            int size = Chota_Helper.size();
+            for (int i = 0; i < size; i++)
             {
                 Temp_Deck.push(Chota_Helper[0]);
                 Chota_Helper.erase(Chota_Helper.begin());
@@ -729,21 +731,25 @@ void Board::ShiftHelperDeck()
                 size = Helper_Deck.size();
             else if (Helper_Deck.size() >=2)
                 size = 2;
+            else if (Helper_Deck.size() == 0)
+                size = Chota_Helper.size();
             for (int i = 0; i < size; i++)
             {
                 Temp_Deck.push(Chota_Helper[0]);
                 Chota_Helper.erase(Chota_Helper.begin());
                 Chota_Helper.push_back(Helper_Deck.front());
                 Helper_Deck.pop();
-            }
+            }//mmmmmmm
         }
         else if (GameMOde == 3)
         {
             int size = 0;
-            if (Helper_Deck.size()<3&& Helper_Deck.size()>0)
+            if (Helper_Deck.size() <3 && Helper_Deck.size() > 0)
                 size = Helper_Deck.size();
-            else if (Helper_Deck.size() == 3)
+            else if (Helper_Deck.size() >= 3)
                 size = 3;
+            else if (Helper_Deck.size() == 0)
+                size = Chota_Helper.size();
             for (int i = 0; i < size; i++)
             {
                 Temp_Deck.push(Chota_Helper[0]);
