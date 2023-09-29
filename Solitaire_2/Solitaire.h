@@ -4,7 +4,7 @@
 class Solitaire
 {
 	Board* B;
-
+	int Game_Mode;
 public:
 	Solitaire();
 	//void DisplayBoard(RenderWindow& window);
@@ -20,6 +20,7 @@ public:
 	//bool HelperDeckContain(int x, int y);
 	//void ShiftHelperDeck();
 	void Play(RenderWindow& window);
-
+	int SelectMode(RenderWindow& window);
+	
 };
 

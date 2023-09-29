@@ -2,8 +2,8 @@
 
 Solitaire::Solitaire()
 {
-	
 	B = new Board();
+    Game_Mode = 0;
 }
 //void Solitaire::DisplayBoard(RenderWindow& window)
 //{
@@ -63,6 +63,86 @@ Solitaire::Solitaire()
 //	B->ShiftHelperDeck();
 //}
 
+int Solitaire::SelectMode(RenderWindow& window)
+{
+    Texture A;
+    A.loadFromFile("SelectMode.jpg");
+    Sprite Back(A);
+    Back.setPosition(370, 10);
+    Back.setScale(0.9, 0.9);
+    Font Nightmare;
+    Nightmare.loadFromFile("Nightmare.ttf");
+    Text Easy;
+    Text Medium;
+    Text Hard;
+    Easy.setFont(Nightmare);
+    Medium.setFont(Nightmare);
+    Hard.setFont(Nightmare);
+    Easy.setPosition(220, 200);
+    Medium.setPosition(170, 300);
+    Hard.setPosition(220, 400);
+    Easy.setString("EASY");
+    Medium.setString("MEDIUM");
+    Hard.setString("HARD");
+    Easy.setCharacterSize(70);
+    Medium.setCharacterSize(70);
+    Hard.setCharacterSize(70);
+    Easy.setFillColor(Color::Green);
+    Hard.setFillColor(Color::Red);
+    Vector2i MP ;
+    while (window.isOpen())
+    {
+        sf::Event evnt;
+        window.clear();
+        while (window.pollEvent(evnt))
+        {
+            if (evnt.type == sf::Event::Closed)
+                window.close();
+        
+            if (evnt.type == sf::Event::MouseMoved)
+            {
+                    MP = sf::Mouse::getPosition(window);
+                    if (Easy.getGlobalBounds().contains(MP.x, MP.y))
+                        Easy.setScale(1.2, 1.2);
+                    else if (Medium.getGlobalBounds().contains(MP.x, MP.y))
+                        Medium.setScale(1.2, 1.2);
+                    else if (Hard.getGlobalBounds().contains(MP.x, MP.y))
+                        Hard.setScale(1.2, 1.2);
+                    else
+                    {
+                        Easy.setScale(1, 1);
+                        Medium.setScale(1, 1);
+                        Hard.setScale(1, 1);
+                    }
+            }
+
+            if (evnt.type == sf::Event::MouseButtonPressed)
+            {
+                if (evnt.mouseButton.button == sf::Mouse::Left)
+                {
+                    MP = sf::Mouse::getPosition(window);
+
+                    if (Easy.getGlobalBounds().contains(MP.x, MP.y))
+                        return 1;
+                    else if (Medium.getGlobalBounds().contains(MP.x, MP.y))
+                        return 2;
+                    else if (Hard.getGlobalBounds().contains(MP.x, MP.y))
+                        return 3;
+
+                }
+            }
+
+
+        }
+        window.draw(Back);
+        window.draw(Easy);
+        window.draw(Medium);
+        window.draw(Hard);
+        window.display();
+    }
+
+}
+
 void Solitaire::Play(RenderWindow& window)
 {
     bool Cardselected = false;
@@ -86,7 +166,11 @@ void Solitaire::Play(RenderWindow& window)
     B->Shuffle();
     B->Display(window);
 
+    
     //--------------
+    Game_Mode = SelectMode(window);
+    //=-----------------
+    
     while (window.isOpen())
     {
         sf::Event evnt;
@@ -121,14 +205,11 @@ void Solitaire::Play(RenderWindow& window)
             {
                 if (evnt.mouseButton.button == sf::Mouse::Left)
                 {
+                    mousePosition2 = sf::Mouse::getPosition(window);
                     if (Cardselected)
                     {
                         if (stack_index != -1 || House_index != -1||HelperUsed)
                         {
-                            mousePosition2 = sf::Mouse::getPosition(window);
-
-
-
 
                             if (!B->isvalidDestination(mousePosition2.x, mousePosition2.y, stack_index, dest_stack_index, dest_House_index))
                             {
@@ -151,11 +232,13 @@ void Solitaire::Play(RenderWindow& window)
                             }                            
                             else if (dest_House_index != -1)
                             {
+                                cout << "\nPushIntoHouse\n";
                                 B->PushIntoHouse(dest_House_index, stack_index);
                                 B->DisplayAnimation(window, dest_House_index);
                             }
                             else
                                 B->PushIntoStack(stack_index, dest_stack_index);
+                           
                             if (HelperUsed)
                             {
                                 B->UpdateChotaHelper();
