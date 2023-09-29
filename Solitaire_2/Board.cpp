@@ -6,6 +6,7 @@
 #include<time.h>
 #include<ctime>
 #include<iostream>
+#include<string>
 #include"House.h"
 #include<SFML/Graphics.hpp>
 using namespace std;
@@ -234,7 +235,14 @@ void Board:: DisplayCardBack(int ri, int ci, RenderWindow& window)
 void Board::Display(RenderWindow& window)
 {
     
+    Font Lato;
+    Lato.loadFromFile("Lato.ttf");
+    Text Moves;
+    Moves.setFont(Lato);
 
+    string Mv = to_string(this->Moves);
+    Moves.setString("Moves  "+Mv);
+    Moves.setPosition(Vector2f(1100,10));
     float x = 1225, y = 130;
 
     for (int i = 0; i < 7; i++)
@@ -268,8 +276,7 @@ void Board::Display(RenderWindow& window)
     {
         Houses[i]->DrawHouse(window);
     }
-    
-
+    window.draw(Moves);
 
     //for (int j = 0, ri = 0; j < 7; j++, ri += 30)
     //{
@@ -280,7 +287,6 @@ void Board::Display(RenderWindow& window)
     //}
     
 }
-
 bool Board::SelectCard(RenderWindow& window, int& stack_index, int& House_index,bool &Helper_Selected)
 {
     //takes mouse position where it was clicked and checks if it is inside any of the 7 invisible rectangles
@@ -391,7 +397,6 @@ bool Board::SelectCard(RenderWindow& window, int& stack_index, int& House_index,
     return true;
     
 }
-
 void Board::DrawTemp(int x, int y, RenderWindow& window)
 {
 
@@ -401,7 +406,6 @@ void Board::DrawTemp(int x, int y, RenderWindow& window)
     }
 
 }
-
 bool Board::isvalidDestination(int mouse_x, int mouse_y, int stack_index,int & dest_stack_index, int& House_index)
 {
     House_index = -1;
@@ -578,7 +582,6 @@ void Board::PushIntoStack(int stack_index,int dest_index)
 //    }
 //
 //}
-
 void Board::PushIntoHouse(int House_index,int stack_index)
 {
     Houses[House_index]->Push(temp[0]);
@@ -649,9 +652,6 @@ void Board::DrawHelperDeck(RenderWindow& window)
         DrawChotaHelper(window);
     }
 }
-
-
-
 bool Board::HelperDeckContain(int x, int y)
 {
     if (HelperDeck_IMG.getGlobalBounds().contains(x, y) || Helper_D_Rect.getGlobalBounds().contains(x, y))
@@ -714,4 +714,16 @@ void Board::UpdateChotaHelper()
         Helper_Deck.pop();
         
     }
+}
+void Board::SetGAmeMode(int GM)
+{
+    GameMOde = GM;
+}
+int Board::GetMoves()
+{
+    return Moves;
+}
+void Board::SetMoves(int moves)
+{
+    Moves = moves;
 }

@@ -5,6 +5,7 @@ class Solitaire
 {
 	Board* B;
 	int Game_Mode;
+	int Moves;
 public:
 	Solitaire();
 	//void DisplayBoard(RenderWindow& window);

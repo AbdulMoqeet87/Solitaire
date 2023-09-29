@@ -165,10 +165,11 @@ void Solitaire::Play(RenderWindow& window)
     //--------------------------------------
     B->Shuffle();
     B->Display(window);
-
-    
+    //--------------------------
+   
     //--------------
     Game_Mode = SelectMode(window);
+    B->SetGAmeMode(Game_Mode);
     //=-----------------
     
     while (window.isOpen())
@@ -235,10 +236,15 @@ void Solitaire::Play(RenderWindow& window)
                                 cout << "\nPushIntoHouse\n";
                                 B->PushIntoHouse(dest_House_index, stack_index);
                                 B->DisplayAnimation(window, dest_House_index);
+                                Moves = B->GetMoves();
+                                B->SetMoves(++Moves);
                             }
                             else
+                            {
                                 B->PushIntoStack(stack_index, dest_stack_index);
-                           
+                                Moves = B->GetMoves();
+                                B->SetMoves(++Moves);
+                            }                          
                             if (HelperUsed)
                             {
                                 B->UpdateChotaHelper();

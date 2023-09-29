@@ -28,6 +28,8 @@ class Board
 	RectangleShape Helper_D_Rect;
 	RectangleShape HelperDeckArea;
 	bool HelperReloaded;
+	int GameMOde;
+	int Moves;
 
 public:
 	Board();
@@ -48,4 +50,10 @@ public:
 	void DrawChotaHelper(RenderWindow& window);
 	void PushBackToChotaHelper();
 	void UpdateChotaHelper();
-};
+	void SetGAmeMode(int GM);
+	int GetMoves();
+	void SetMoves(int);
+	
+
+}
+;
