@@ -12,7 +12,10 @@ using namespace std;
 using namespace sf;
 Board::Board()
 {
-
+    BG_.loadFromFile("BackGround2.jpeg");
+    BackG.setTexture(BG_);
+    BackG.setPosition(150, 150);
+    BackG.setScale(0.2, 0.2);
     CR.loadFromFile("CardReveal.wav");
     ATS.loadFromFile("AddToStack.wav");
     CardReveal.setBuffer(CR);
@@ -85,20 +88,19 @@ Board::Board()
     Houses[1] = new House("Spade", "Spades logo2.png", x, y+300);
     Houses[3] = new House("Hearts", "Heart logo2.png", x, y+450);
     //------------------------------------------------------------------
-    CB.loadFromFile("Card_back.png");
+    CB.loadFromFile("Card_Back4.png");
     CardBAck.setTexture(CB);
+    CardBack_Rect.setSize(Vector2f(102, 141));
     //--------------------------------------------------------------------
     HD.loadFromFile("Helper_stack2.png");
-    HelperDeck_IMG.setTexture(HD);
+    HelperDeck_IMG.setTexture(CB);
     HD_icon.loadFromFile("Reload_button2.png");
     Helper_icon.setTexture(HD_icon);
     Helper_D_Rect.setFillColor(Color(128, 128, 128, 80));
-    Helper_D_Rect.setPosition(25, 90);
-    Helper_D_Rect.setSize(sf::Vector2f(90, 134));
+    Helper_D_Rect.setPosition(24,89);
+    Helper_D_Rect.setSize(sf::Vector2f(102, 141));
     Helper_icon.setPosition(45, 130);
-    this->HelperDeckArea.setSize(Vector2f(150.0f, 700.0f));
-    HelperDeckArea.setPosition(0, 0);
-    HelperDeckArea.setFillColor(Color(128, 128, 128, 70));
+   
     HelperReloaded = true;
     //--------------------------------------------------------------------
 
@@ -233,12 +235,17 @@ void Board::Shuffle()
 //}
 void Board:: DisplayCardBack(int ri, int ci, RenderWindow& window)
 {
-    CardBAck.setPosition(ri-1, ci);
+
+    CardBAck.setPosition(ri, ci);
+    CardBack_Rect.setPosition(CardBAck.getPosition().x - 1, CardBAck.getPosition().y - 1);
+    CardBack_Rect.setFillColor(Color::Red);
+    window.draw(CardBack_Rect);
     window.draw(CardBAck);
 }
 void Board::Display(RenderWindow& window)
 {
     
+    window.draw(BackG);
     Font Lato;
     Lato.loadFromFile("Lato.ttf");
     Text Moves;
@@ -252,13 +259,10 @@ void Board::Display(RenderWindow& window)
 
     for (int i = 0; i < 7; i++)
         window.draw(Rects[i]);
-    /*Texture A;
-    A.loadFromFile("background.jpg");
-    Sprite Backg(A);
-    Backg.setPosition(0, -80);*/
-   // window.draw(Backg);
+ 
+ 
     
-    //DRawing MAin DECK
+   
 
     DrawHelperDeck(window);
         
@@ -616,16 +620,16 @@ void Board:: DisplayAnimation(RenderWindow& window, int houseIndex)
         Houses[houseIndex]->SetPosition(pos, pos);
                 alpha -= opac;
                 if (alpha > 0)
-                    Houses[houseIndex]->SetOutlineColorRGB(0, 0, 255, alpha);
+                    Houses[houseIndex]->SetOutlineColorRGB(255, 0,0, alpha);
                     Board::Display(window);
                     window.display();
             sleep(milliseconds(30));
         }
     
     Houses[houseIndex]->SetoutlineSize(size);
-    Houses[houseIndex]->SetOutLineColor(Color::Blue);
+    Houses[houseIndex]->SetOutLineColor(Color::Red);
     Houses[houseIndex]->SetSize(x, y);
-    Houses[houseIndex]->SetFillColor(Color(128, 128, 128, 128));
+   //Houses[houseIndex]->SetFillColor(Color(128, 128, 128, 128));
     Houses[houseIndex]->SetPosition(0, 0);
 }
 void Board::PushBackToHouse(int House_index)
@@ -636,36 +640,40 @@ void Board::PushBackToHouse(int House_index)
 }
 void Board::DrawHelperDeck(RenderWindow& window)
 {
-    window.draw(HelperDeckArea);
+   
     if (Helper_Deck.empty() && Chota_Helper.empty()&&Temp_Deck.empty())
     {
-        Helper_D_Rect.setOutlineThickness(2);
+        Helper_D_Rect.setOutlineThickness(3);
         Helper_D_Rect.setOutlineColor(Color::Red);
+        Helper_D_Rect.setFillColor(Color::Transparent);
+
         window.draw(Helper_D_Rect);
    // window.draw(Helper_icon);
     }
      else if(Helper_Deck.empty()&&!Chota_Helper.empty())
     { 
-        Helper_D_Rect.setOutlineThickness(2);
+        Helper_D_Rect.setOutlineThickness(3);
         Helper_D_Rect.setOutlineColor(Color::Red);
+        Helper_D_Rect.setFillColor(Color::Transparent);
+
         window.draw(Helper_D_Rect);
         DrawChotaHelper(window);
     }
     else if (Helper_Deck.empty() && Chota_Helper.empty())
     {
-        Helper_D_Rect.setOutlineThickness(2);
+        Helper_D_Rect.setOutlineThickness(3);
         Helper_D_Rect.setOutlineColor(Color::Red);
+        Helper_D_Rect.setFillColor(Color::Transparent);
+
         window.draw(Helper_D_Rect);
         window.draw(Helper_icon);
     }
     else
     {
-        float size = Helper_Deck.size();
-        for (float i = 0,ci=25+(0.5*size); i < size; i++,ci-=0.5)
-        {
-            HelperDeck_IMG.setPosition(ci, 90);
-             window.draw(HelperDeck_IMG);
-        }
+        Helper_D_Rect.setFillColor(Color::Red);
+        HelperDeck_IMG.setPosition(25, 90);
+         window.draw(Helper_D_Rect);
+        window.draw(HelperDeck_IMG);
         DrawChotaHelper(window);
     }
 }

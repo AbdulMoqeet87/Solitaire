@@ -20,6 +20,7 @@ class Board
 	MyStack<Cards>*S;
 	Texture CB;
 	Sprite CardBAck;
+	RectangleShape CardBack_Rect;
 	vector<Cards*>temp;
 	House** Houses;
 	Texture HD;
@@ -27,7 +28,6 @@ class Board
 	Texture HD_icon;
 	Sprite Helper_icon;
 	RectangleShape Helper_D_Rect;
-	RectangleShape HelperDeckArea;
 	bool HelperReloaded;
 	int GameMOde;
 	int Moves;
@@ -35,6 +35,8 @@ class Board
 	Sound CardReveal;
 	SoundBuffer ATS;
 	Sound AddToStack;
+	Texture BG_;
+	Sprite BackG;
 	
 public:
 	Board();

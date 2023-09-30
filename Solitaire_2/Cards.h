@@ -44,8 +44,8 @@ public:
 	}
 	void HighlightCard()
 	{
-		outline.setOutlineThickness(4);
-		outline.setOutlineColor(sf::Color::Green);
+		outline.setOutlineThickness(1);
+		outline.setOutlineColor(sf::Color::Red);
 	}
 	void UnHighlightCard()
 	{

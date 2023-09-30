@@ -44,7 +44,7 @@ void Hearts::DisplayCard(int ri, int ci, RenderWindow& window)
 	Card.setPosition(ri, ci);
 
 	outline.setSize(Vector2f(102.0f, 136.0f));
-	outline.setFillColor(Color::White);
+	outline.setFillColor(Color::Red);
 	outline.setPosition(Card.getPosition().x - 1, Card.getPosition().y - 1);
 	window.draw(outline);
 	window.draw(Card);

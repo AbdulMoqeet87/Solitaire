@@ -21,11 +21,11 @@ public:
 		icon.loadFromFile(image_Path);
 		Home_icon.setTexture(icon);
 		MyHome.setPosition(rect_x, rect_y);
-		MyHome.setFillColor(Color(128, 128, 128, 128));
+		MyHome.setFillColor(Color(0, 0, 0, 0));
 		//MyHome.setFillColor(Color::Green);
 		MyHome.setSize(Vector2f(102.0f, 136.0f));
-		MyHome.setOutlineThickness(2);
-		MyHome.setOutlineColor(Color::Blue);
+		MyHome.setOutlineThickness(3);
+		MyHome.setOutlineColor(Color::Red);
 			
 		Home_icon.setPosition(rect_x +30, rect_y + 39);
 	

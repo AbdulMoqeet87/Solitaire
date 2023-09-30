@@ -22,6 +22,7 @@ public:
 	//void ShiftHelperDeck();
 	void Play(RenderWindow& window);
 	int SelectMode(RenderWindow& window);
+	void Starting(RenderWindow& window);
 	
 };
 
