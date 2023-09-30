@@ -3,16 +3,20 @@
 #include"Diamond.h"
 #include"Hearts.h"
 #include"Club.h"
-#include<time.h>
-#include<ctime>
 #include<iostream>
 #include<string>
 #include"House.h"
 #include<SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 using namespace std;
 using namespace sf;
 Board::Board()
 {
+
+    CR.loadFromFile("CardReveal.wav");
+    ATS.loadFromFile("AddToStack.wav");
+    CardReveal.setBuffer(CR);
+    AddToStack.setBuffer(ATS);
 
     Rects = new RectangleShape[7];
     for (int i = 0, j = 0; i < 7; i++, j += 140)
@@ -242,7 +246,8 @@ void Board::Display(RenderWindow& window)
 
     string Mv = to_string(this->Moves);
     Moves.setString("Moves  "+Mv);
-    Moves.setPosition(Vector2f(1100,10));
+    Moves.setCharacterSize(20);
+    Moves.setPosition(Vector2f(1240,25));
     float x = 1225, y = 130;
 
     for (int i = 0; i < 7; i++)
@@ -488,12 +493,15 @@ void Board::ReturnCards(int stack_index)
 }
 void Board::PushIntoStack(int stack_index,int dest_index)
 {
+    CardReveal.play();
     for (int i = 0; i < temp.size(); i++)
     {
         temp[i]->UnHighlightCard();
     }
     S[dest_index].PushRevealed(temp);
-    S[stack_index].RevealNext();
+  
+S[stack_index].RevealNext();
+
 }
 //void Board::SelectCard(RenderWindow& window)
 //{
@@ -588,6 +596,8 @@ void Board::PushIntoHouse(int House_index,int stack_index)
     temp[0]->UnHighlightCard();
     temp.clear();
     S[stack_index].RevealNext(); 
+    
+    
 }
 void Board:: DisplayAnimation(RenderWindow& window, int houseIndex)
 {
@@ -598,7 +608,7 @@ void Board:: DisplayAnimation(RenderWindow& window, int houseIndex)
     Houses[houseIndex]->SetFillColor(Color(0, 0, 0, 0));
     int alpha = 255;
   //  for (; i < 15;)
-    {
+    AddToStack.play();
         for (int pos=0, opac = 0, sz=0; opac < 45; opac+=5, sz += 4,pos+=2)
         {
              window.clear();
@@ -611,7 +621,7 @@ void Board:: DisplayAnimation(RenderWindow& window, int houseIndex)
                     window.display();
             sleep(milliseconds(30));
         }
-    }
+    
     Houses[houseIndex]->SetoutlineSize(size);
     Houses[houseIndex]->SetOutLineColor(Color::Blue);
     Houses[houseIndex]->SetSize(x, y);
@@ -627,7 +637,14 @@ void Board::PushBackToHouse(int House_index)
 void Board::DrawHelperDeck(RenderWindow& window)
 {
     window.draw(HelperDeckArea);
-    if(Helper_Deck.empty()&&!Chota_Helper.empty())
+    if (Helper_Deck.empty() && Chota_Helper.empty()&&Temp_Deck.empty())
+    {
+        Helper_D_Rect.setOutlineThickness(2);
+        Helper_D_Rect.setOutlineColor(Color::Red);
+        window.draw(Helper_D_Rect);
+   // window.draw(Helper_icon);
+    }
+     else if(Helper_Deck.empty()&&!Chota_Helper.empty())
     { 
         Helper_D_Rect.setOutlineThickness(2);
         Helper_D_Rect.setOutlineColor(Color::Red);
@@ -658,15 +675,25 @@ bool Board::HelperDeckContain(int x, int y)
         return true;
     return false;
 }
-void Board::ShiftHelperDeck()
+void Board::ShiftHelperDeck(RenderWindow& window)
 {
-    if (Helper_Deck.empty()&&Chota_Helper.empty())
+    Moves++;
+    if (Helper_Deck.empty() && Chota_Helper.empty()&& Temp_Deck.empty())
     {
+        return;
+    }
+    else if (Helper_Deck.empty()&&Chota_Helper.empty())
+    {
+        
+        CardReveal.play();
         swap(Temp_Deck, Helper_Deck);//it will make temp deck empty and will shift all elements of temp into Helper
         HelperReloaded = true;
     }
     else if (HelperReloaded)
     {
+        CardAnimation(window);
+        CardReveal.play();
+
         Cards* T;
         for (int i = 0; i < 3; i++)
         {
@@ -717,6 +744,9 @@ void Board::ShiftHelperDeck()
     }
     else
     {
+        CardReveal.play();
+
+        CardAnimation(window);
         if(GameMOde==1)
         {
             Temp_Deck.push(Chota_Helper[0]);
@@ -758,6 +788,8 @@ void Board::ShiftHelperDeck()
                 Helper_Deck.pop();
             }
         }
+    
+
     }
 
 }
@@ -768,7 +800,6 @@ void Board::DrawChotaHelper(RenderWindow& window)
         {
             Chota_Helper[size-1-i]->DisplayCard(26, 250 + ci, window);
         }
-    
 }
 void Board::PushBackToChotaHelper()
 {
@@ -797,4 +828,24 @@ int Board::GetMoves()
 void Board::SetMoves(int moves)
 {
     Moves = moves;
+}
+void Board::CardAnimation(RenderWindow& window)
+{
+    cout << "\n\nentered this anime\n";
+    Cards* T = Helper_Deck.front();
+  // Helper_Deck.pop();
+    int x = 26;
+    int y = 90;
+    int d_x = 26;
+    int d_y = 180;
+
+    while (y<d_y)
+    {
+        window.clear();
+        Display(window);
+        y += 6;
+        T->DisplayCard(x,y,window);
+        window.display();
+        sleep(milliseconds(0.2));
+    }
 }

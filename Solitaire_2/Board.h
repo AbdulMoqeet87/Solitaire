@@ -5,6 +5,7 @@
 #include"MyStack.h"
 #include"House.h"
 #include<queue>
+#include<SFML/Audio.hpp>
 using namespace std;
 using namespace sf;
 class Board
@@ -30,7 +31,11 @@ class Board
 	bool HelperReloaded;
 	int GameMOde;
 	int Moves;
-
+	SoundBuffer CR;
+	Sound CardReveal;
+	SoundBuffer ATS;
+	Sound AddToStack;
+	
 public:
 	Board();
 	void Display(RenderWindow& window);
@@ -46,13 +51,14 @@ public:
 	void PushBackToHouse(int House_index);
 	void DrawHelperDeck(RenderWindow&window);
 	bool HelperDeckContain(int x, int y);
-	void ShiftHelperDeck();
+	void ShiftHelperDeck(RenderWindow&window);
 	void DrawChotaHelper(RenderWindow& window);
 	void PushBackToChotaHelper();
 	void UpdateChotaHelper();
 	void SetGAmeMode(int GM);
 	int GetMoves();
 	void SetMoves(int);
+	void CardAnimation(RenderWindow &window);
 	
 
 }

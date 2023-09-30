@@ -154,6 +154,7 @@ void Solitaire::Play(RenderWindow& window)
     int dest_stack_index = -1;
     int House_index = -1;
     int dest_House_index = -1;
+    bool DeskClicked = false;
     //-----------------
     RectangleShape blur;
     blur.setSize(Vector2f(1375, 696));
@@ -187,17 +188,23 @@ void Solitaire::Play(RenderWindow& window)
                 {
 
                     mousePosition1 = sf::Mouse::getPosition(window);
-                    if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
+                    if (DeskClicked == false)
                     {
-                        B->ShiftHelperDeck();
-                    }
-                    else if (!Cardselected)
-                    {
-                      if (B->SelectCard(window, stack_index, House_index,HelperUsed))
-                      {
-                            Selected = true;
-                            Cardselected = true;
-                      }
+                        if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
+                        {
+                            B->ShiftHelperDeck(window);
+                        }
+
+                        else if (!Cardselected)
+                        {
+                            if (B->SelectCard(window, stack_index, House_index, HelperUsed))
+                            {
+                                Selected = true;
+                                Cardselected = true;
+                                DeskClicked = true;
+                            }
+
+                        }
                     }
                 }
             }
@@ -253,6 +260,7 @@ void Solitaire::Play(RenderWindow& window)
 
                             Selected = false;
                             Cardselected = false;
+                            DeskClicked = false;
                             //yaha abhi shi se ni bnaya isko zra shi se krna ha abhi and houses bhi bnanay 
                             //hain and score and dark mode
                             //25/9/2023
