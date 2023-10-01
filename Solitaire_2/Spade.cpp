@@ -39,7 +39,7 @@ Spade::Spade(int ri, int ci, int num, string clr)
 
 void Spade::DisplayCard(int ri, int ci, RenderWindow& window)
 {
-	cout << "\n\ndisplayingcard\n\n";
+	
 	Card.setPosition(ri, ci);
 
 	outline.setSize(Vector2f(102.0f, 136.0f));

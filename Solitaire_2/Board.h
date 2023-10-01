@@ -40,6 +40,7 @@ class Board
 	
 public:
 	Board();
+	Board(const Board& B2);
 	void Display(RenderWindow& window);
 	void Shuffle();
 	void DisplayCardBack(int ri, int ci, RenderWindow& window);

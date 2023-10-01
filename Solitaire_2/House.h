@@ -15,6 +15,16 @@ class House
 	int ri, ci;
 public:
 	
+	House(const House& H2)
+	{
+		name = H2.name;
+		MyHome = H2.MyHome;
+		icon = H2.icon;
+		Home_icon = H2.Home_icon;
+		Stack = H2.Stack;
+		ri = H2.ri;
+		ci = H2.ci;
+	}
 	House(string _name, string image_Path, int rect_x, int rect_y)
 	{
 		name = _name;

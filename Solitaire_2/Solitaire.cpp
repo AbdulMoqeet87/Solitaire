@@ -4,6 +4,12 @@ Solitaire::Solitaire()
 {
 	B = new Board();
     Game_Mode = 0;
+    UD.loadFromFile("UndoIcon.png");
+    RD.loadFromFile("RedoIcon.png");
+    undo.setTexture(UD);
+    redo.setTexture(RD);
+    undo.setPosition(20, 600);
+    redo.setPosition(100, 600);
 }
 //void Solitaire::DisplayBoard(RenderWindow& window)
 //{
@@ -167,12 +173,13 @@ void Solitaire::Play(RenderWindow& window)
     B->Shuffle();
     B->Display(window);
     //--------------------------
-    Starting(window);
+    //Starting(window);
     //--------------
     Game_Mode = SelectMode(window);
     B->SetGAmeMode(Game_Mode);
     //=-----------------
-    
+    Undo.push_back(*B);
+
     while (window.isOpen())
     {
         sf::Event evnt;
@@ -186,13 +193,38 @@ void Solitaire::Play(RenderWindow& window)
             {
                 if (evnt.mouseButton.button == sf::Mouse::Left)
                 {
-
                     mousePosition1 = sf::Mouse::getPosition(window);
-                    if (DeskClicked == false)
-                    {
-                        if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
+
+                        if (undo.getGlobalBounds().contains(mousePosition1.x, mousePosition1.y))
                         {
+                            if(Undo.size()>=2)
+                            {
+                                delete B;
+                                B=nullptr;
+                                B = new Board(Undo[Undo.size() - 2]);
+                                Redo.push_back(Undo.back());
+                                Undo.pop_back();
+                            }
+                        }
+                        else if (redo.getGlobalBounds().contains(mousePosition1.x, mousePosition1.y))
+                        {
+                            if (Redo.size() > 0)
+                            {
+                                delete B;
+                                B = nullptr;
+                                B = new Board(Redo.back());
+
+                                Undo.push_back(Redo.back());
+                                Redo.pop_back();
+                            }
+                        }
+                        else if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
+                        {
+                           
                             B->ShiftHelperDeck(window);
+                            Undo.push_back(*B);
+                            cout << "\nUndo Size " << Undo.size() << endl;
+                            Redo.clear();
                         }
 
                         else if (!Cardselected)
@@ -205,7 +237,6 @@ void Solitaire::Play(RenderWindow& window)
                             }
 
                         }
-                    }
                 }
             }
 
@@ -238,26 +269,40 @@ void Solitaire::Play(RenderWindow& window)
                                 stack_index = -1;
                               
                             }                            
-                            else if (dest_House_index != -1)
-                            {
-                                cout << "\nPushIntoHouse\n";
-                                B->PushIntoHouse(dest_House_index, stack_index);
-                                B->DisplayAnimation(window, dest_House_index);
-                                Moves = B->GetMoves();
-                                B->SetMoves(++Moves);
-                            }
                             else
                             {
-                                B->PushIntoStack(stack_index, dest_stack_index);
-                                Moves = B->GetMoves();
-                                B->SetMoves(++Moves);
-                            }                          
-                            if (HelperUsed)
-                            {
-                                B->UpdateChotaHelper();
-                                HelperUsed = false;
-                            }
 
+
+                                if (dest_House_index != -1)
+                                {
+                                    cout << "\nPushIntoHouse\n";
+                                    B->PushIntoHouse(dest_House_index, stack_index);
+                                    B->DisplayAnimation(window, dest_House_index);
+                                    Moves = B->GetMoves();
+                                    B->SetMoves(++Moves);
+                                    Undo.push_back(*B);
+                                    cout << "\nUndo Size " << Undo.size() << endl;
+                                    Redo.clear();
+
+                                }
+                                else
+                                {
+                                    B->PushIntoStack(stack_index, dest_stack_index);
+                                    Moves = B->GetMoves();
+                                    B->SetMoves(++Moves);
+                                    Undo.push_back(*B);
+                                    cout << "\nUndo Size " << Undo.size() << endl;
+                                    Redo.clear();
+                                }
+                                if (HelperUsed)
+                                {
+                                    B->UpdateChotaHelper();
+                                    HelperUsed = false;
+                                    Undo.push_back(*B);
+                                    cout << "\nUndo Size " << Undo.size() << endl;
+                                    Redo.clear();
+                                }
+                            }
                             Selected = false;
                             Cardselected = false;
                             DeskClicked = false;
@@ -278,6 +323,8 @@ void Solitaire::Play(RenderWindow& window)
             B->DrawTemp(mousePosition1.x, mousePosition1.y, window);
         }
         // window.draw(blur);
+        window.draw(undo);
+        window.draw(redo);
         window.display();
         //window.clear();
     }
@@ -300,14 +347,14 @@ void Solitaire::Starting(RenderWindow& window)
     Sol.setCharacterSize(120);
     Sol.setFillColor(Color::White);
     Sol.setOutlineColor(Color::Red);
-    Sol.setOutlineThickness(4);
+    Sol.setOutlineThickness(2);
     //----------------------------
     Saga.setString("SAGA");
-    Saga.setPosition(460, 400);
+    Saga.setPosition(490, 400);
     Saga.setCharacterSize(120);
     Saga.setFillColor(Color::White);
     Saga.setOutlineColor(Color::Red);
-    Saga.setOutlineThickness(4);
+    Saga.setOutlineThickness(2);
     int alpha = 255;
     int alpha2 = 255;
 
@@ -331,7 +378,7 @@ void Solitaire::Starting(RenderWindow& window)
         {
 
             window.draw(Sol);
-            if (i > 22)
+            if (i > 29)
                 window.draw(Saga);
             if(i>56&&alpha>=0)
             {
@@ -353,4 +400,22 @@ void Solitaire::Starting(RenderWindow& window)
     }
 
 
+}
+
+void Solitaire::DisplayDeckDistribution(RenderWindow& window)
+{
+    for (int i = 0, ci = 0; i < 7; i++, ci += 140)
+    {
+        //int rev_size = S[i].getRevealedSize();
+        //int un_rev_size = S[i].getUnRevealedSize();
+
+        //for (int j = 0, ri = 0; j < rev_size + un_rev_size; j++, ri += 30)
+            //for (int j = 0,ri=0; j <=i; j++, ri += 30)
+        {
+            if (1);// (j < un_rev_size)
+                //          DisplayCardBack(220 + ci, 90 + ri, window);
+            else;
+        //        S[i][j - un_rev_size]->DisplayCard(220 + ci, 90 + ri, window);
+        }
+    }
 }

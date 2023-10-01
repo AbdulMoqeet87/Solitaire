@@ -15,15 +15,23 @@ protected:
 	RectangleShape outline;
 	Texture Img;
 	Sprite Card;
-	Texture hom;
 	
 public:
-		
-	RectangleShape MyHome;
-	Sprite home_logo;
+
 	virtual void DisplayCard(int ri, int ci, RenderWindow& window) = 0;	
 
 	virtual bool IsLegal(int num2, string color, bool Is_Stack, bool Is_House) = 0;
+	Cards& operator =(const Cards& C2)
+	{
+		number = C2.number;
+		_color= C2._color;
+		x = C2.x;
+		y = C2.y;
+		HouseName = C2.HouseName;
+		outline = C2.outline;
+		Card= C2.Card;
+		return *this;
+	}
 	int getnum()
 	{
 		return number;
@@ -54,16 +62,18 @@ public:
 	}
 //make getlocal bound function inside every card class and get their local bounds
 
-	void DisplayHome(RenderWindow&window)
-	{
-		window.draw(MyHome);
-		window.draw(home_logo);
-	}
+	
 	string gethouseNAme()
 	{
 		return HouseName;
 
 	}
+	void SetRowCol(int _x, int _y)
+	{
+		
+		x = _x, y = _y;
+	}
+
 
 };
 

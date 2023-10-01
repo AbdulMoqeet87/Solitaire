@@ -845,7 +845,7 @@ void Board::CardAnimation(RenderWindow& window)
     int x = 26;
     int y = 90;
     int d_x = 26;
-    int d_y = 180;
+    int d_y = 170;
 
     while (y<d_y)
     {
@@ -857,3 +857,154 @@ void Board::CardAnimation(RenderWindow& window)
         sleep(milliseconds(0.2));
     }
 }
+Board ::Board(const Board& B2)
+{
+
+
+    BG_ = B2.BG_;
+    BackG = B2.BackG;
+
+    CR = B2.CR;
+    CardReveal.setBuffer(CR);
+    ATS = B2.ATS;
+    AddToStack.setBuffer(ATS);
+
+
+   
+    Deck = new Cards * [52];
+    int index = 0;
+
+    /*   for (int i = 0; i < 52; i++)
+       {
+           if (i%2== 0)
+           {
+
+               Deck[i] = new Spade(230, 160, 1, "black");
+
+           }
+           else
+           {
+               Deck[i] = new Hearts(230, 160, 2, "red");
+           }
+       }*/
+    Rects = new RectangleShape[7];
+    for (int i = 0, j = 0; i < 7; i++, j += 140)
+    {
+        Rects[i] = B2.Rects[i];
+    }
+    GameMOde=B2.GameMOde;
+    Moves=B2.Moves;
+
+    S = new MyStack<Cards>[7];
+    for (int i = 0; i < 7; i++)
+    {
+        S[i] = B2.S[i];
+    }
+    Houses = new House * [4];
+    float x = 1235, y = 90;
+    for (int i = 0; i < 4; i++)
+    {
+        Houses[i] = new House(*B2.Houses[i]);
+    }
+    
+    //==---------------------
+    Helper_Deck = B2.Helper_Deck;
+    Chota_Helper = B2.Chota_Helper;
+    Temp_Deck = B2.Temp_Deck;
+   
+    //------------------------------------------------------------------
+    CB=B2.CB;
+    CardBAck=B2.CardBAck;
+    CardBack_Rect = B2.CardBack_Rect;
+    //--------------------------------------------------------------------
+    HelperDeck_IMG = B2.HelperDeck_IMG;
+    Helper_D_Rect=B2.Helper_D_Rect;
+    HD_icon = B2.HD_icon;
+    Helper_icon=B2.Helper_icon;
+ 
+    HelperReloaded = B2.HelperReloaded;
+
+}
+//Board::Board(const Board& B2)
+//{
+//    BackG.setTexture(B2.BG_);
+//    BackG.setPosition(150, 150);
+//    BackG.setScale(0.2, 0.2);
+//    CardReveal.setBuffer(B2.CR);
+//    AddToStack.setBuffer(B2.ATS);
+//
+//    Rects = B2.Rects;
+//    Deck = B2.Deck;
+//
+//
+//    /*   for (int i = 0; i < 52; i++)
+//       {
+//           if (i%2== 0)
+//           {
+//
+//               Deck[i] = new Spade(230, 160, 1, "black");
+//
+//           }
+//           else
+//           {
+//               Deck[i] = new Hearts(230, 160, 2, "red");
+//           }
+//       }*/
+//
+//
+//       /*   for (int i = 0; i < 4; i++)
+//          {
+//
+//              for (int j = 0; j < 13; j++, index++)
+//              {
+//                  if (i == 0)
+//                  {
+//
+//                      Deck[index] = B2.Deck[index];
+//
+//                  }
+//                  if (i == 1)
+//                  {
+//                      Deck[index] = new Club(230, 160, j + 1, "black");
+//                  }
+//                  if (i == 2)
+//                  {
+//                      Deck[index] = new Hearts(230, 160, j + 1, "red");
+//
+//                  }
+//                  if (i == 3)
+//                  {
+//                      Deck[index] = new Diamond(230, 160, j + 1, "red");
+//
+//                  }
+//
+//              }
+//
+//          }*/
+//
+//    for (int i = 0; i < 7; i++)
+//    {
+//        S[i] = B2.S[i];
+//    }
+//
+//    Helper_Deck = B2.Helper_Deck;
+//    Chota_Helper = B2.Chota_Helper;
+//    Temp_Deck = B2.Temp_Deck;
+//
+//
+//    Houses[0] = B2.Houses[0];
+//    Houses[1] = B2.Houses[1];
+//    Houses[2] = B2.Houses[2];
+//    Houses[3] = B2.Houses[3];
+//    //------------------------------------------------------------------
+//    CardBAck.setTexture(B2.CB);
+//    CardBack_Rect.setSize(Vector2f(102, 141));
+//    //--------------------------------------------------------------------
+//    HelperDeck_IMG.setTexture(B2.CB);
+//    Helper_icon.setTexture(B2.HD_icon);
+//    Helper_D_Rect.setFillColor(Color(128, 128, 128, 80));
+//    Helper_D_Rect.setPosition(24, 89);
+//    Helper_D_Rect.setSize(sf::Vector2f(102, 141));
+//    Helper_icon.setPosition(45, 130);
+//    HelperReloaded = B2.HelperReloaded;
+//}

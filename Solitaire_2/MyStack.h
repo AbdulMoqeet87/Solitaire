@@ -106,6 +106,12 @@ public:
 			return true;
 		return false;
 	}
+	MyStack<T>& operator= (const MyStack<T> &M2)
+	{
+		rev = M2.rev;
+		un_rev = M2.un_rev;
+		return *this;
+	}
 
 };
 
