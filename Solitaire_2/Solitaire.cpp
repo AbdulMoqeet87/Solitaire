@@ -146,6 +146,19 @@ int Solitaire::SelectMode(RenderWindow& window)
 
 void Solitaire::Play(RenderWindow& window)
 {
+
+    Font Nightmare;
+    Nightmare.loadFromFile("Lato.ttf");
+    //Text Sol;
+    Text Time;
+    //Sol.setFont(Nightmare);
+    Time.setFont(Nightmare);
+    Time.setString("00:00:00");
+    Time.setPosition(20,20);
+    Time.setCharacterSize(20);
+    //Sol.setFillColor(Color::White);
+    
+    //-----------------------------
     bool Cardselected = false;
     bool Selected = false;;
     bool IsReleased = false;
@@ -163,7 +176,10 @@ void Solitaire::Play(RenderWindow& window)
     blur.setFillColor(Color(128, 128, 128, 100));
     //---------------------------------------
     bool HelperUsed = false;
-
+    int T = 0;
+    int S = 0;
+    int M = 0;
+    int H = 0;
     //--------------------------------------
     B->Shuffle();
     B->Display(window);
@@ -209,7 +225,7 @@ void Solitaire::Play(RenderWindow& window)
                             {
                                 B->PushBackToHouse(House_index);
                             }
-                            else if(stack_index!=-1)
+                            else 
                                 B->ReturnCards(stack_index);
 
                             House_index = -1;
@@ -362,8 +378,48 @@ void Solitaire::Play(RenderWindow& window)
                 }
             }
         }
+        T++;
+        if (T == 150)
+        {
+            S++;
+            T = 0;
+            if (S == 60)
+            {
+                M++;
+                S = 0;
+                T = 0;
+            }
+            if (M == 60) 
+            { H++;
+            M = 0;
+            S = 0;
+            T = 0;
+            }
+        }
+        string Hr;
+        string Min;
+        string Sec;
+        
+        Hr = to_string(H);
+        Min = to_string(M);
+        Sec = to_string(S);
+if(H<10)
+{
+    Hr = "0" + Hr;
+}
+if (M < 10)
+{
+    Min = "0" + Min;
+}
+if (S < 10)
+{
+    Sec = "0" + Sec;
+}
+
+        Time.setString(Hr + " : " + Min + " : " + Sec);
 
         B->Display(window);
+        window.draw(Time);
         if (Selected)
         {
             mousePosition1 = sf::Mouse::getPosition(window);

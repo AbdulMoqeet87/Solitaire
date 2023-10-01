@@ -69,5 +69,18 @@ public:
 	bool AutoMoved(int stackindex,int houseindex,bool HelperUsed);
 	bool UndoContains(Vector2i MP);
 	bool RedoContains(Vector2i MP);
+	bool HasWon()
+	{
+		bool allrevealeed = true;
+		for (int i = 0; i < 7; i++)
+		{
+			if (S[i].getUnRevealedSize() != 0)
+			{
+				allrevealeed = false;
+				return allrevealeed;
+			}
+		}
+		return allrevealeed;
+	}
 }
 ;
