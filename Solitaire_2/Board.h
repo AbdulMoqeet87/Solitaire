@@ -37,6 +37,10 @@ class Board
 	Sound AddToStack;
 	Texture BG_;
 	Sprite BackG;
+	Texture UD;
+	Texture RD;
+	Sprite undo;
+	Sprite redo;
 	
 public:
 	Board();
@@ -62,7 +66,8 @@ public:
 	int GetMoves();
 	void SetMoves(int);
 	void CardAnimation(RenderWindow &window);
-	
-
+	bool AutoMoved(int stackindex,int houseindex,bool HelperUsed);
+	bool UndoContains(Vector2i MP);
+	bool RedoContains(Vector2i MP);
 }
 ;

@@ -4,12 +4,7 @@ Solitaire::Solitaire()
 {
 	B = new Board();
     Game_Mode = 0;
-    UD.loadFromFile("UndoIcon.png");
-    RD.loadFromFile("RedoIcon.png");
-    undo.setTexture(UD);
-    redo.setTexture(RD);
-    undo.setPosition(20, 600);
-    redo.setPosition(100, 600);
+ 
 }
 //void Solitaire::DisplayBoard(RenderWindow& window)
 //{
@@ -191,54 +186,103 @@ void Solitaire::Play(RenderWindow& window)
 
             if (evnt.type == sf::Event::MouseButtonPressed)
             {
-                if (evnt.mouseButton.button == sf::Mouse::Left)
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
                 {
-                    mousePosition1 = sf::Mouse::getPosition(window);
-
-                        if (undo.getGlobalBounds().contains(mousePosition1.x, mousePosition1.y))
+                    if (B->SelectCard(window, stack_index, House_index, HelperUsed))
+                    {
+                        if (B->AutoMoved(stack_index, House_index, HelperUsed))
                         {
-                            if(Undo.size()>=2)
+                            if (HelperUsed)
                             {
-                                delete B;
-                                B=nullptr;
-                                B = new Board(Undo[Undo.size() - 2]);
-                                Redo.push_back(Undo.back());
-                                Undo.pop_back();
+                                B->UpdateChotaHelper();
+                                HelperUsed = false;
                             }
                         }
-                        else if (redo.getGlobalBounds().contains(mousePosition1.x, mousePosition1.y))
+                        else
                         {
-                            if (Redo.size() > 0)
+                            if (HelperUsed)
                             {
-                                delete B;
-                                B = nullptr;
-                                B = new Board(Redo.back());
-
-                                Undo.push_back(Redo.back());
-                                Redo.pop_back();
+                                B->PushBackToChotaHelper();
+                                HelperUsed = false;
                             }
-                        }
-                        else if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
-                        {
+                            else if (House_index != -1)
+                            {
+                                B->PushBackToHouse(House_index);
+                            }
+                            else if(stack_index!=-1)
+                                B->ReturnCards(stack_index);
+
+                            House_index = -1;
+                            stack_index = -1;
                            
-                            B->ShiftHelperDeck(window);
-                            Undo.push_back(*B);
-                            cout << "\nUndo Size " << Undo.size() << endl;
-                            Redo.clear();
                         }
+                    
+                    }
 
-                        else if (!Cardselected)
-                        {
-                            if (B->SelectCard(window, stack_index, House_index, HelperUsed))
-                            {
-                                Selected = true;
-                                Cardselected = true;
-                                DeskClicked = true;
-                            }
 
-                        }
+
+
+
+
+                }
+
+
+
+
+
+
+
+            }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                mousePosition1 = sf::Mouse::getPosition(window);
+
+                if (B->UndoContains(mousePosition1))
+                {
+                    if (Undo.size() >= 2)
+                    {
+                        delete B;
+                        B = nullptr;
+                        B = new Board(Undo[Undo.size() - 2]);
+                        Redo.push_back(Undo.back());
+                        Undo.pop_back();
+                    }
+                }
+                else if (B->RedoContains(mousePosition1))
+                {
+                    if (Redo.size() > 0)
+                    {
+                        delete B;
+                        B = nullptr;
+                        B = new Board(Redo.back());
+
+                        Undo.push_back(Redo.back());
+                        Redo.pop_back();
+                    }
+                }
+                else if (B->HelperDeckContain(mousePosition1.x, mousePosition1.y))
+                {
+
+                    B->ShiftHelperDeck(window);
+                    Undo.push_back(*B);
+                    cout << "\nUndo Size " << Undo.size() << endl;
+                    Redo.clear();
+                }
+
+                else if (!Cardselected)
+                {
+                    if (B->SelectCard(window, stack_index, House_index, HelperUsed))
+                    {
+                        Selected = true;
+                        Cardselected = true;
+                        DeskClicked = true;
+                    }
+
                 }
             }
+
+
 
             if (evnt.type == sf::Event::MouseButtonReleased)
             {
@@ -247,7 +291,7 @@ void Solitaire::Play(RenderWindow& window)
                     mousePosition2 = sf::Mouse::getPosition(window);
                     if (Cardselected)
                     {
-                        if (stack_index != -1 || House_index != -1||HelperUsed)
+                        if (stack_index != -1 || House_index != -1 || HelperUsed)
                         {
 
                             if (!B->isvalidDestination(mousePosition2.x, mousePosition2.y, stack_index, dest_stack_index, dest_House_index))
@@ -257,7 +301,7 @@ void Solitaire::Play(RenderWindow& window)
                                     B->PushBackToChotaHelper();
                                     HelperUsed = false;
                                 }
-                                
+
                                 else if (House_index != -1)
                                 {
                                     B->PushBackToHouse(House_index);
@@ -267,8 +311,8 @@ void Solitaire::Play(RenderWindow& window)
 
                                 House_index = -1;
                                 stack_index = -1;
-                              
-                            }                            
+
+                            }
                             else
                             {
 
@@ -280,6 +324,11 @@ void Solitaire::Play(RenderWindow& window)
                                     B->DisplayAnimation(window, dest_House_index);
                                     Moves = B->GetMoves();
                                     B->SetMoves(++Moves);
+                                    if (HelperUsed)
+                                    {
+                                        B->UpdateChotaHelper();
+                                        HelperUsed = false;
+                                    }
                                     Undo.push_back(*B);
                                     cout << "\nUndo Size " << Undo.size() << endl;
                                     Redo.clear();
@@ -290,18 +339,16 @@ void Solitaire::Play(RenderWindow& window)
                                     B->PushIntoStack(stack_index, dest_stack_index);
                                     Moves = B->GetMoves();
                                     B->SetMoves(++Moves);
+                                    if (HelperUsed)
+                                    {
+                                        B->UpdateChotaHelper();
+                                        HelperUsed = false;
+                                    }
                                     Undo.push_back(*B);
                                     cout << "\nUndo Size " << Undo.size() << endl;
                                     Redo.clear();
                                 }
-                                if (HelperUsed)
-                                {
-                                    B->UpdateChotaHelper();
-                                    HelperUsed = false;
-                                    Undo.push_back(*B);
-                                    cout << "\nUndo Size " << Undo.size() << endl;
-                                    Redo.clear();
-                                }
+
                             }
                             Selected = false;
                             Cardselected = false;
@@ -323,8 +370,7 @@ void Solitaire::Play(RenderWindow& window)
             B->DrawTemp(mousePosition1.x, mousePosition1.y, window);
         }
         // window.draw(blur);
-        window.draw(undo);
-        window.draw(redo);
+
         window.display();
         //window.clear();
     }

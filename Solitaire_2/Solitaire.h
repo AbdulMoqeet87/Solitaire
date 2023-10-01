@@ -8,10 +8,7 @@ class Solitaire
 	int Moves;
 	vector<Board>Undo;
 	vector<Board>Redo;
-	Texture UD;
-	Texture RD;
-	Sprite undo;
-	Sprite redo;
+	
 public:
 	Solitaire();
 	//void DisplayBoard(RenderWindow& window);

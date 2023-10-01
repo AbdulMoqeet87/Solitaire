@@ -12,6 +12,12 @@ using namespace std;
 using namespace sf;
 Board::Board()
 {
+    UD.loadFromFile("UndoIcon.png");
+    RD.loadFromFile("RedoIcon.png");
+    undo.setTexture(UD);
+    redo.setTexture(RD);
+    undo.setPosition(20, 600);
+    redo.setPosition(100, 600);
     BG_.loadFromFile("BackGround2.jpeg");
     BackG.setTexture(BG_);
     BackG.setPosition(150, 150);
@@ -261,7 +267,8 @@ void Board::Display(RenderWindow& window)
         window.draw(Rects[i]);
  
  
-    
+    window.draw(undo);
+    window.draw(redo);
    
 
     DrawHelperDeck(window);
@@ -860,6 +867,13 @@ void Board::CardAnimation(RenderWindow& window)
 Board ::Board(const Board& B2)
 {
 
+    UD=B2.UD;
+    RD=B2.RD;
+    undo=B2.undo;
+    redo=B2.redo;
+    
+    
+
 
     BG_ = B2.BG_;
     BackG = B2.BackG;
@@ -924,6 +938,113 @@ Board ::Board(const Board& B2)
  
     HelperReloaded = B2.HelperReloaded;
 
+}
+bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed)
+{
+    if (temp.size() == 1)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+
+            if (i != houseindex)
+            {
+
+                if ((temp[0]->gethouseNAme() == Houses[i]->GetName()))
+                {
+                    if (Houses[i]->IsEmpty())
+                    {
+                        if (temp[0]->getnum() == 1)
+                        {
+
+                            Houses[i]->Push(temp[0]);
+                            temp.clear();
+                            if (stackindex != -1 && !S[stackindex].IsEmpty())
+                            {
+                                S[stackindex].RevealNext();
+                            }
+                            return true;
+                        }
+                    }
+
+                    int temp_card_no = temp[0]->getnum();
+                    int House_card_no = Houses[i]->Top()->getnum();
+
+                    if ((temp_card_no - House_card_no) == 1)
+                    {
+                        Houses[i]->Push(temp[0]);
+                        temp.clear();
+                        if (stackindex != -1 && !S[stackindex].IsEmpty())
+                        {
+                            S[stackindex].RevealNext();
+                        }
+                        return true;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    cout << "\ntemp after houses " << temp.size()<<endl;
+    for(int i=0;i<7;i++)
+    {
+        if(i!=stackindex)
+        {
+
+            if (S[i].IsEmpty())
+            {
+                if (temp[0]->getnum() == 13)
+                {
+                    S[i].PushRevealed(temp);
+                    if (stackindex != -1 && !S[stackindex].IsEmpty())
+                    {
+                        S[stackindex].RevealNext();
+                    }
+
+                    return true;
+                }
+            }
+            else 
+            {
+                if (S[i].Top()->GetColor() != temp[0]->GetColor())
+                {
+                    int dest_num = S[i].Top()->getnum();
+                    int incoming_num = temp[0]->getnum();
+                    if (((abs(dest_num - incoming_num)) == 1) && (dest_num > incoming_num))
+                    {
+                        S[i].PushRevealed(temp);
+                        if (stackindex != -1&& !S[stackindex].IsEmpty())
+                        {
+                            S[stackindex].RevealNext();
+                        }
+                        return true;
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    return false;
+
+
+
+
+}
+
+bool Board::UndoContains(Vector2i Mp)
+{
+    if (Mp.x >= 20 && Mp.x < 90 && Mp.y >= 600 && Mp.y < 670)
+        return true;
+    return false;
+}
+bool Board::RedoContains(Vector2i Mp)
+{
+    if (Mp.x >= 100 && Mp.x < 170 && Mp.y >= 600 && Mp.y < 670)
+        return true;
+    return false;
 }
 //Board::Board(const Board& B2)
 //{
