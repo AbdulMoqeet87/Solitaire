@@ -62,7 +62,7 @@ public:
 	int GetMoves();
 	void SetMoves(int);
 	void CardAnimation(RenderWindow &window);
-	
+	bool AutoMoved(int stackindex,int houseindex,bool HelperUsed);
 
 }
 ;
