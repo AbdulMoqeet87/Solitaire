@@ -1046,6 +1046,95 @@ bool Board::RedoContains(Vector2i Mp)
         return true;
     return false;
 }
+bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed)
+{
+    
+    for(int i=0;i<4;i++)
+    {
+
+        if(i!=houseindex)
+        {
+
+            if ((temp.size() == 1) && (temp[0]->gethouseNAme() == Houses[i]->GetName()))
+            {
+                if (Houses[i]->IsEmpty())
+                {
+                    if (temp[0]->getnum() == 1)
+                    {
+
+                        Houses[i]->Push(temp[0]);
+                        temp.clear();
+                        if (stackindex != -1)
+                        {
+                            S[stackindex].RevealNext();
+                        }
+                        return true;
+                    }
+                }
+
+                int temp_card_no = temp[0]->getnum();
+                int House_card_no = Houses[i]->Top()->getnum();
+
+                if ((temp_card_no - House_card_no) == 1)
+                {
+                    Houses[i]->Push(temp[0]);
+                    temp.clear();
+                    if (stackindex != -1)
+                    {
+                        S[stackindex].RevealNext();
+                    }
+                    return true;
+                }
+            }
+        }
+
+    }
+    
+
+    
+    for(int i=0;i<7;i++)
+    {
+        if(i!=stackindex)
+        {
+
+            if (S[i].IsEmpty())
+            {
+                if (temp[0]->getnum() == 13)
+                {
+                    S[i].PushRevealed(temp);
+                    if (stackindex != -1)
+                    {
+                        S[stackindex].RevealNext();
+                    }
+                    return true;
+                }
+            }
+            else if (S[i].Top()->GetColor() != temp[0]->GetColor())
+            {
+                int dest_num = S[i].Top()->getnum();
+                int incoming_num = temp[0]->getnum();
+                if (((abs(dest_num - incoming_num)) == 1) && (dest_num > incoming_num))
+                {
+                    S[i].PushRevealed(temp);
+                    if (stackindex != -1)
+                    {
+                        S[stackindex].RevealNext();
+                    }
+                    return true;
+                }
+           
+            }
+        }
+    }
+
+
+    return false;
+
+
+
+
+}
+
 //Board::Board(const Board& B2)
 //{
 //    BackG.setTexture(B2.BG_);
