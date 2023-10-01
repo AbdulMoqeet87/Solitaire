@@ -246,6 +246,8 @@ int main()
     window.setPosition(Vector2i(-10, 0));
 
     Solitaire* S = new Solitaire();
+    //S->Winning(window);
+    
     S->Play(window);
     return 0;
 }

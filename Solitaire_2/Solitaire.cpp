@@ -184,7 +184,7 @@ void Solitaire::Play(RenderWindow& window)
     B->Shuffle();
     B->Display(window);
     //--------------------------
-    //Starting(window);
+    Starting(window);
     //--------------
     Game_Mode = SelectMode(window);
     B->SetGAmeMode(Game_Mode);
@@ -206,7 +206,7 @@ void Solitaire::Play(RenderWindow& window)
                 {
                     if (B->SelectCard(window, stack_index, House_index, HelperUsed))
                     {
-                        if (B->AutoMoved(stack_index, House_index, HelperUsed))
+                        if (B->AutoMoved(stack_index, House_index, HelperUsed,window))
                         {
                             if (HelperUsed)
                             {
@@ -428,8 +428,12 @@ if (S < 10)
         // window.draw(blur);
 
         window.display();
+        if (B->HasWon())
+            break;
+        
         //window.clear();
     }
+    Winning(window);
 
 }
 
@@ -442,6 +446,9 @@ void Solitaire::Starting(RenderWindow& window)
     Nightmare.loadFromFile("GameOfThrones.ttf");
     Text Sol;
     Text Saga;
+    SoundBuffer St;
+    St.loadFromFile("StartingSound.wav");
+    Sound Start(St);
     Sol.setFont(Nightmare);
     Saga.setFont(Nightmare);
     Sol.setString("SOLITAIRE");
@@ -469,13 +476,16 @@ void Solitaire::Starting(RenderWindow& window)
             if (evnt.type == sf::Event::Closed)
                 window.close();
         }
-
+        Start.play();
+        Start.setVolume(400);
         string s = to_string(i);
         B.loadFromFile(s + ".png");
         BG.setTexture(B);
         BG.setPosition(-70, 0);
         BG.setScale(1.2, 1.2);
         window.draw(BG);
+        Start.play();
+        Start.setVolume(400);
         if(i>15)
         {
 
@@ -504,20 +514,58 @@ void Solitaire::Starting(RenderWindow& window)
 
 }
 
-void Solitaire::DisplayDeckDistribution(RenderWindow& window)
+void Solitaire::Winning(RenderWindow& window)
 {
-    for (int i = 0, ci = 0; i < 7; i++, ci += 140)
-    {
-        //int rev_size = S[i].getRevealedSize();
-        //int un_rev_size = S[i].getUnRevealedSize();
+    Texture B;
+    B.loadFromFile("Winning.png");
+    Font Lato;
+    Lato.loadFromFile("Lato.ttf");
+    Text Movs;
+    Movs.setFont(Lato);
+    Movs.setPosition(560, 360);
+    Movs.setCharacterSize(40);
+    Movs.setString("MOVES  "+to_string(this->Moves));
+    Sprite Winning;
+    Winning.setTexture(B);
+    Winning.setPosition(350, -30);
+    int i = -10;
+    Texture WB;
+    WB.loadFromFile("winningBack.jpg");
+    Sprite WinningBack;
+    WinningBack.setTexture(WB);
+    WinningBack.setScale(1.2, 1.2);
+    WinningBack.setPosition(30, -20);
 
-        //for (int j = 0, ri = 0; j < rev_size + un_rev_size; j++, ri += 30)
-            //for (int j = 0,ri=0; j <=i; j++, ri += 30)
+    while (window.isOpen())
+    {
+        sf::Event evnt;
+        window.clear();
+        while (window.pollEvent(evnt))
         {
-            if (1);// (j < un_rev_size)
-                //          DisplayCardBack(220 + ci, 90 + ri, window);
-            else;
-        //        S[i][j - un_rev_size]->DisplayCard(220 + ci, 90 + ri, window);
+            if (evnt.type == sf::Event::Closed)
+                window.close();
         }
+
+        window.draw(WinningBack);
+        if (i < 70)
+        {
+            Winning.setPosition(350, i);
+
+        }
+        i ++;
+
+        
+        window.draw(Winning);
+        if (i >= 80)
+        {
+            window.draw(Movs);
+        }
+
+
+        window.display();
+        sleep(milliseconds(8));
     }
+
+
+
 }

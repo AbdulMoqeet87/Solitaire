@@ -940,7 +940,7 @@ Board ::Board(const Board& B2)
     HelperReloaded = B2.HelperReloaded;
 
 }
-bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed)
+bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed,RenderWindow&window)
 {
     if (temp.size() == 1)
     {
@@ -959,6 +959,7 @@ bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed)
 
                             Houses[i]->Push(temp[0]);
                             temp.clear();
+                            DisplayAnimation(window, i);
                             if (stackindex != -1 && !S[stackindex].IsEmpty())
                             {
                                 S[stackindex].RevealNext();
@@ -974,6 +975,7 @@ bool Board:: AutoMoved(int stackindex, int houseindex, bool HelperUsed)
                         if ((temp_card_no - House_card_no) == 1)
                         {
                             Houses[i]->Push(temp[0]);
+                            DisplayAnimation(window, i);
                             temp.clear();
                             if (stackindex != -1 && !S[stackindex].IsEmpty())
                             {

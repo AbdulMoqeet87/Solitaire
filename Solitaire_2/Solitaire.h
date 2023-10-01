@@ -8,7 +8,7 @@ class Solitaire
 	int Moves;
 	vector<Board>Undo;
 	vector<Board>Redo;
-	
+
 public:
 	Solitaire();
 	//void DisplayBoard(RenderWindow& window);
@@ -26,7 +26,10 @@ public:
 	void Play(RenderWindow& window);
 	int SelectMode(RenderWindow& window);
 	void Starting(RenderWindow& window);
-	void DisplayDeckDistribution(RenderWindow& window);
+	//void DisplayDeckDistribution(RenderWindow& window);
+	void Winning(RenderWindow& window);
 	
+
+
 };
 

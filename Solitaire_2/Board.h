@@ -66,7 +66,7 @@ public:
 	int GetMoves();
 	void SetMoves(int);
 	void CardAnimation(RenderWindow &window);
-	bool AutoMoved(int stackindex,int houseindex,bool HelperUsed);
+	bool AutoMoved(int stackindex,int houseindex,bool HelperUsed,RenderWindow&window);
 	bool UndoContains(Vector2i MP);
 	bool RedoContains(Vector2i MP);
 	bool HasWon()
@@ -82,5 +82,6 @@ public:
 		}
 		return allrevealeed;
 	}
+
 }
 ;
