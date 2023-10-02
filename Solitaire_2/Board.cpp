@@ -511,8 +511,10 @@ void Board::PushIntoStack(int stack_index,int dest_index)
     }
     S[dest_index].PushRevealed(temp);
   
-S[stack_index].RevealNext();
-
+    if (stack_index != -1 && !S[stack_index].IsEmpty())
+    {
+        S[stack_index].RevealNext();
+    }
 }
 //void Board::SelectCard(RenderWindow& window)
 //{
@@ -606,7 +608,10 @@ void Board::PushIntoHouse(int House_index,int stack_index)
     Houses[House_index]->Push(temp[0]);
     temp[0]->UnHighlightCard();
     temp.clear();
-    S[stack_index].RevealNext(); 
+    if(stack_index!=-1&&!S[stack_index].IsEmpty())
+    {
+        S[stack_index].RevealNext();
+    }
     
     
 }
